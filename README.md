@@ -19,7 +19,7 @@ Tech Stack
 
 Language: Java
 
-IDE: VS Code
+IDE: Android Studio
 
 Database: SQLite
 
