@@ -31,7 +31,7 @@ Clone the repository:
 
 bash
 git clone https://github.com/yourusername/SmartPantryManager.git
-Open in VS Code.
+Open IDE.
 
 Build and run on emulator or physical device.
 
