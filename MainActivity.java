@@ -63,17 +63,19 @@ public class MainActivity extends AppCompatActivity {
             refreshDisplay();
         });
 
-        binding.bottomNavigation.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
-            if (id == R.id.nav_pantry) {
-                currentMode = ViewMode.PANTRY;
-            } else if (id == R.id.nav_recipes) {
-                currentMode = ViewMode.RECIPES;
-            } else if (id == R.id.nav_favorites) {
-                currentMode = ViewMode.FAVORITES;
-            }
+        binding.navIngredients.setOnClickListener(v -> {
+            currentMode = ViewMode.PANTRY;
             refreshDisplay();
-            return true;
+        });
+
+        binding.navRecipes.setOnClickListener(v -> {
+            currentMode = ViewMode.RECIPES;
+            refreshDisplay();
+        });
+
+        binding.navSaved.setOnClickListener(v -> {
+            currentMode = ViewMode.FAVORITES;
+            refreshDisplay();
         });
 
         binding.fabAdd.setOnClickListener(v -> showItemDialog(null));
