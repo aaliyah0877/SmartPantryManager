@@ -1,0 +1,195 @@
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:titleTextColor="@color/surface"
+            app:title="Smart Pantry"
+            app:subtitle="Use what you have. Waste less."
+            app:subtitleTextColor="@color/primary_light" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Uiverse Input Container Style -->
+            <LinearLayout
+                android:id="@+id/quickAddContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/uiverse_input_container_bg"
+                android:elevation="6dp">
+
+                <EditText
+                    android:id="@+id/quickAddEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_weight="3"
+                    android:background="@drawable/uiverse_input_edit_bg"
+                    android:hint="@string/quick_add_hint"
+                    android:paddingHorizontal="16dp"
+                    android:textColor="@color/on_surface"
+                    android:textSize="14sp"
+                    android:singleLine="true"
+                    android:inputType="text"
+                    android:autofillHints="name"
+                    android:imeOptions="actionDone" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnQuickAdd"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1.2"
+                    android:background="@drawable/uiverse_input_button_bg"
+                    app:backgroundTint="@null"
+                    android:text="@string/btn_add_label"
+                    android:textColor="@color/surface"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.2"
+                    style="@style/Widget.Material3.Button.UnelevatedButton" />
+
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false" />
+
+            <TextView
+                android:id="@+id/emptyState"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="32dp"
+                android:text="@string/empty_pantry"
+                android:visibility="gone"
+                style="@style/TextStyle.Subtitle" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <LinearLayout
+        android:id="@+id/bottomNavigation"
+        android:layout_width="wrap_content"
+        android:layout_height="64dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/uiverse_bottom_nav_gradient_bg"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingHorizontal="16dp"
+        android:elevation="8dp">
+
+        <LinearLayout
+            android:id="@+id/navIngredients"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:paddingHorizontal="12dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true">
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@android:drawable/ic_menu_agenda"
+                app:tint="@color/surface" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="@string/nav_ingredients"
+                android:textColor="@color/surface"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/navRecipes"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:paddingHorizontal="12dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true">
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@android:drawable/ic_menu_gallery"
+                app:tint="@color/surface" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="@string/nav_recipes"
+                android:textColor="@color/surface"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/navSaved"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:paddingHorizontal="12dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true">
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@android:drawable/btn_star_big_on"
+                app:tint="@color/surface" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="@string/nav_favorites"
+                android:textColor="@color/surface"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:layout_marginBottom="80dp"
+        app:srcCompat="@android:drawable/ic_input_add"
+        app:tint="@color/surface"
+        android:backgroundTint="@color/accent" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
