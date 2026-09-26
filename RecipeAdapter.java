@@ -45,6 +45,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         holder.binding.recipeName.setText(recipe.name);
         holder.binding.recipeDescription.setText(recipe.description);
         holder.binding.recipeIngredients.setText(recipe.ingredients);
+        holder.binding.recipeInstructions.setText(recipe.description);
         
         int starIcon = recipe.favorite ? android.R.drawable.btn_star_big_on : android.R.drawable.btn_star_big_off;
         holder.binding.btnFavorite.setIconResource(starIcon);
