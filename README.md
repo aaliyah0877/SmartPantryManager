@@ -31,7 +31,7 @@ Clone the repository:
 
 bash
 git clone https://github.com/yourusername/SmartPantryManager.git
-Open IDE.
+Open in IDE.
 
 Build and run on emulator or physical device.
 
