@@ -101,7 +101,7 @@
         android:background="@drawable/uiverse_bottom_nav_gradient_bg"
         android:orientation="horizontal"
         android:gravity="center"
-        android:paddingHorizontal="16dp"
+        android:paddingHorizontal="12dp"
         android:elevation="8dp">
 
         <LinearLayout
@@ -110,22 +110,22 @@
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:gravity="center"
-            android:paddingHorizontal="12dp"
+            android:paddingHorizontal="8dp"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true">
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:src="@android:drawable/ic_menu_agenda"
                 app:tint="@color/surface" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
+                android:layout_marginStart="4dp"
                 android:text="@string/nav_ingredients"
                 android:textColor="@color/surface"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -135,22 +135,47 @@
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:gravity="center"
-            android:paddingHorizontal="12dp"
+            android:paddingHorizontal="8dp"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true">
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:src="@android:drawable/ic_menu_gallery"
                 app:tint="@color/surface" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
+                android:layout_marginStart="4dp"
                 android:text="@string/nav_recipes"
                 android:textColor="@color/surface"
-                android:textSize="14sp"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/navAlmostThere"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:paddingHorizontal="8dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true">
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@android:drawable/ic_menu_compass"
+                app:tint="@color/surface" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="@string/nav_almost_there"
+                android:textColor="@color/surface"
+                android:textSize="12sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -160,22 +185,22 @@
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:gravity="center"
-            android:paddingHorizontal="12dp"
+            android:paddingHorizontal="8dp"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true">
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:src="@android:drawable/btn_star_big_on"
                 app:tint="@color/surface" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
+                android:layout_marginStart="4dp"
                 android:text="@string/nav_favorites"
                 android:textColor="@color/surface"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
