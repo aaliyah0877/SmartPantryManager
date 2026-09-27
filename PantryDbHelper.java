@@ -13,7 +13,7 @@ import java.util.Set;
 
 public class PantryDbHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "smart_pantry.db";
-    private static final int DB_VERSION = 5;
+    private static final int DB_VERSION = 7;
 
     public PantryDbHelper(Context context) { super(context, DB_NAME, null, DB_VERSION); }
 
@@ -97,6 +97,38 @@ public class PantryDbHelper extends SQLiteOpenHelper {
         addRecipe(db, "Spicy Salmon Sushi Bites",
             "Prepare sushi rice. Air fry rice squares. Top with salmon mix, avocado, and unagi sauce.",
             "cooked rice, rice vinegar, honey, salt, canned salmon, ponzu sauce, sesame oil, japanese mayo, sriracha, green onions, avocado, unagi sauce, furikake");
+
+        addRecipe(db, "Crab Rangoon Nachos",
+            "Preheat oven to 400°F. Brush sheet pans with olive oil. Cut wonton wrappers diagonally, arrange, brush tops with oil, bake 6–8 min until crisp. Make sauce: heat cream cheese, milk, soy sauce, sesame oil, sugar, garlic powder until smooth. Stir in half green onions, layer wonton chips with sauce and crab meat, drizzle with sweet chili sauce and sesame seeds.",
+            "wonton wrappers, olive oil, cream cheese, milk, soy sauce, toasted sesame oil, sugar, green onions, imitation crab meat, sweet chili sauce, sesame seeds, chili crisp");
+
+        addRecipe(db, "Crispy Rice Paper Dumplings",
+            "Mix ground chicken, green onions, soy sauce, ginger, chili crisp, and sesame oil. Soak rice paper in lukewarm water, place filling in center, fold into square dumplings. Heat canola oil in skillet, sauté dumplings until golden brown on both sides. Serve hot with dipping sauce.",
+            "ground chicken, green onions, soy sauce, gingerroot, chili crisp sauce, sesame oil, rice paper wrappers, canola oil");
+
+        addRecipe(db, "Coffee Jelly",
+            "Microwave 2 tbsp coffee until boiling, sprinkle gelatin and stir until smooth. Add remaining coffee and sugar, bring to boil over medium-high heat. Pour mixture into dish, refrigerate 5–7 hours until firm. Cut jelly into cubes and serve with milk, condensed milk, or whipped cream.",
+            "unflavored gelatin, freshly brewed coffee, sugar");
+
+        addRecipe(db, "Korean Fried Chicken",
+            "Make sauce: combine garlic, honey, brown sugar, soy sauce, gochujang, ketchup, and sesame oil in saucepan. Simmer 5–7 minutes until thickened. Prep chicken: separate wings into drumettes and flats, coat thoroughly in cornstarch. Fry wings in batches until crispy. Brush sauce generously over wings, garnish with sesame seeds and sliced green onions.",
+            "chicken wings, gingerroot, cornstarch, canola oil, garlic, honey, brown sugar, soy sauce, gochujang, ketchup, sesame oil, green onions, sesame seeds");
+
+        addRecipe(db, "Mango Smoothie",
+            "Blend mango, yogurt, honey, ice, and milk until smooth. Pour into glasses and serve chilled.",
+            "ripe mangoes, greek yogurt, honey, ice cubes, milk");
+
+        addRecipe(db, "Mediterranean Quinoa Salad",
+            "Cook quinoa and let cool. Mix tomatoes, cucumber, feta, and olives in a bowl. Add quinoa, drizzle with olive oil and lemon juice. Toss well and serve chilled.",
+            "quinoa, cherry tomatoes, cucumber, feta cheese, olives, olive oil, lemon juice");
+
+        addRecipe(db, "Garlic Butter Shrimp",
+            "Melt butter in skillet, sauté garlic until fragrant. Add shrimp, cook 2–3 minutes per side until pink. Drizzle with lemon juice, sprinkle parsley, serve hot.",
+            "shrimp, butter, garlic, lemon juice, parsley");
+
+        addRecipe(db, "Chocolate Mousse",
+            "Melt chocolate gently over a double boiler. Whisk egg yolks with sugar, fold into melted chocolate. Whip cream until soft peaks form, fold into chocolate mixture. Beat egg whites until stiff, fold gently into mixture. Chill mousse in fridge for 2–3 hours before serving.",
+            "dark chocolate, eggs, sugar, heavy cream");
     }
 
     private void addRecipe(SQLiteDatabase db, String name, String description, String ingredients) {
