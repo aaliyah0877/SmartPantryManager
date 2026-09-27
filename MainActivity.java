@@ -1,12 +1,11 @@
 package com.tagari.smartpantry;
 
-import android.animation.PropertyValuesHolder;
-import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -23,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private PantryAdapter pantryAdapter;
     private RecipeAdapter recipeAdapter;
     
-    private enum ViewMode { PANTRY, RECIPES, FAVORITES }
+    private enum ViewMode { PANTRY, RECIPES, ALMOST_THERE, FAVORITES }
     private ViewMode currentMode = ViewMode.PANTRY;
 
     @Override
@@ -73,6 +72,11 @@ public class MainActivity extends AppCompatActivity {
             refreshDisplay();
         });
 
+        binding.navAlmostThere.setOnClickListener(v -> {
+            currentMode = ViewMode.ALMOST_THERE;
+            refreshDisplay();
+        });
+
         binding.navSaved.setOnClickListener(v -> {
             currentMode = ViewMode.FAVORITES;
             refreshDisplay();
@@ -83,13 +87,27 @@ public class MainActivity extends AppCompatActivity {
         binding.btnQuickAdd.setOnClickListener(v -> {
             String name = (binding.quickAddEditText.getText() != null) ? 
                     binding.quickAddEditText.getText().toString().trim() : "";
-            if (!name.isEmpty()) {
-                PantryItem item = new PantryItem(0, name, getString(R.string.default_category), 1, getString(R.string.default_unit), "");
-                database.saveItem(item);
-                binding.quickAddEditText.setText("");
-                refreshDisplay();
-                Snackbar.make(binding.getRoot(), "Item added: " + name, Snackbar.LENGTH_SHORT).show();
+            if (name.isEmpty()) {
+                binding.quickAddEditText.setError(getString(R.string.error_name));
+                
+                View alertView = getLayoutInflater().inflate(R.layout.dialog_custom_alert, null);
+                AlertDialog alert = new MaterialAlertDialogBuilder(this)
+                        .setView(alertView)
+                        .setCancelable(true)
+                        .create();
+                
+                View btnClose = alertView.findViewById(R.id.btnCloseAlert);
+                if (btnClose != null) {
+                    btnClose.setOnClickListener(view -> alert.dismiss());
+                }
+                alert.show();
+                return;
             }
+            PantryItem item = new PantryItem(0, name, getString(R.string.default_category), 1, getString(R.string.default_unit), "");
+            database.saveItem(item);
+            binding.quickAddEditText.setText("");
+            refreshDisplay();
+            Snackbar.make(binding.getRoot(), "Item added: " + name, Snackbar.LENGTH_SHORT).show();
         });
 
         binding.quickAddEditText.addTextChangedListener(new TextWatcher() {
@@ -102,6 +120,33 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {}
         });
+    }
+
+    private boolean isIngredientAvailable(String req, Set<String> available) {
+        req = req.trim().toLowerCase();
+        String reqSingular = singularize(req);
+        
+        for (String have : available) {
+            have = have.trim().toLowerCase();
+            if (have.equals(req) || have.contains(req) || req.contains(have)) {
+                return true;
+            }
+            String haveSingular = singularize(have);
+            if (haveSingular.equals(reqSingular) || haveSingular.contains(reqSingular) || reqSingular.contains(haveSingular)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String singularize(String word) {
+        if (word.endsWith("es") && word.length() > 3) {
+            return word.substring(0, word.length() - 2);
+        }
+        if (word.endsWith("s") && word.length() > 2 && !word.endsWith("ss")) {
+            return word.substring(0, word.length() - 1);
+        }
+        return word;
     }
 
     private void refreshDisplay() {
@@ -121,46 +166,64 @@ public class MainActivity extends AppCompatActivity {
         } else {
             binding.fabAdd.hide();
             binding.quickAddContainer.setVisibility(View.GONE);
-            boolean favoritesOnly = (currentMode == ViewMode.FAVORITES);
             
-            List<Recipe> allRecipes = database.getRecipes(favoritesOnly);
-            List<Recipe> resultRecipes = new ArrayList<>();
+            List<RecipeAdapter.RecipeItem> items = new ArrayList<>();
             Set<String> available = database.availableIngredients();
-            
-            for (Recipe recipe : allRecipes) {
-                // Fuzzy Match Logic:
-                // For each ingredient required by the recipe, check if any pantry item name 
-                // contains it OR if the ingredient name contains any pantry item name.
-                List<String> missing = new ArrayList<>();
-                for (String req : recipe.ingredientSet()) {
-                    boolean found = false;
-                    for (String have : available) {
-                        if (have.contains(req) || req.contains(have)) {
-                            found = true;
-                            break;
+
+            if (currentMode == ViewMode.FAVORITES) {
+                List<Recipe> allRecipes = database.getRecipes(true);
+                for (Recipe recipe : allRecipes) {
+                    List<String> missing = new ArrayList<>();
+                    for (String req : recipe.ingredientSet()) {
+                        if (!isIngredientAvailable(req, available)) {
+                            missing.add(req);
                         }
                     }
-                    if (!found) missing.add(req);
-                }
-
-                // If in favorites, always show.
-                // If in recipes, show if no ingredients are missing (Strict) 
-                // OR show if user requested to see "Recipe ideas".
-                // I'll show full matches first, then partial matches.
-                if (favoritesOnly || missing.isEmpty()) {
-                    // Update recipe description to show missing items if any (for favorites)
                     if (!missing.isEmpty()) {
                         recipe.description = "Missing: " + String.join(", ", missing);
                     }
-                    resultRecipes.add(recipe);
+                    items.add(new RecipeAdapter.RecipeItem(recipe));
                 }
+                recipeAdapter.updateItems(items);
+                binding.recyclerView.setAdapter(recipeAdapter);
+                toggleEmptyState(items.isEmpty(), getString(R.string.empty_favorites));
+                binding.toolbar.setTitle(R.string.recipes_favorites_title);
+            } else if (currentMode == ViewMode.RECIPES) {
+                List<Recipe> allRecipes = database.getRecipes(false);
+                for (Recipe recipe : allRecipes) {
+                    List<String> missing = new ArrayList<>();
+                    for (String req : recipe.ingredientSet()) {
+                        if (!isIngredientAvailable(req, available)) {
+                            missing.add(req);
+                        }
+                    }
+                    if (missing.isEmpty()) {
+                        items.add(new RecipeAdapter.RecipeItem(recipe));
+                    }
+                }
+                recipeAdapter.updateItems(items);
+                binding.recyclerView.setAdapter(recipeAdapter);
+                toggleEmptyState(items.isEmpty(), getString(R.string.empty_ideas));
+                binding.toolbar.setTitle(R.string.recipes_ideas_title);
+            } else if (currentMode == ViewMode.ALMOST_THERE) {
+                List<Recipe> allRecipes = database.getRecipes(false);
+                for (Recipe recipe : allRecipes) {
+                    List<String> missing = new ArrayList<>();
+                    for (String req : recipe.ingredientSet()) {
+                        if (!isIngredientAvailable(req, available)) {
+                            missing.add(req);
+                        }
+                    }
+                    if (missing.size() == 1) {
+                        recipe.description = "⚠️ Almost There! Missing: " + missing.get(0);
+                        items.add(new RecipeAdapter.RecipeItem(recipe));
+                    }
+                }
+                recipeAdapter.updateItems(items);
+                binding.recyclerView.setAdapter(recipeAdapter);
+                toggleEmptyState(items.isEmpty(), getString(R.string.empty_almost_there));
+                binding.toolbar.setTitle(R.string.almost_there_title);
             }
-            
-            recipeAdapter.updateRecipes(resultRecipes);
-            binding.recyclerView.setAdapter(recipeAdapter);
-            toggleEmptyState(resultRecipes.isEmpty(), 
-                favoritesOnly ? getString(R.string.empty_favorites) : getString(R.string.empty_ideas));
-            binding.toolbar.setTitle(favoritesOnly ? R.string.recipes_favorites_title : R.string.recipes_ideas_title);
         }
     }
 
@@ -192,37 +255,23 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton(R.string.btn_save, (dialog, which) -> {
                     Editable nameText = dialogBinding.editName.getText();
                     String name = (nameText != null) ? nameText.toString().trim() : "";
-                    
-                    Editable categoryText = dialogBinding.editCategory.getText();
-                    String category = (categoryText != null) ? categoryText.toString().trim() : "";
-                    
-                    Editable quantityText = dialogBinding.editQuantity.getText();
-                    String quantityStr = (quantityText != null) ? quantityText.toString().trim() : "";
-                    
-                    Editable unitText = dialogBinding.editUnit.getText();
-                    String unit = (unitText != null) ? unitText.toString().trim() : "";
-                    
-                    Editable expiryText = dialogBinding.editExpiry.getText();
-                    String expiry = (expiryText != null) ? expiryText.toString().trim() : "";
+                    String category = dialogBinding.editCategory.getText() != null ? dialogBinding.editCategory.getText().toString().trim() : getString(R.string.default_category);
+                    int quantity = 1;
+                    try {
+                        if (dialogBinding.editQuantity.getText() != null) {
+                            quantity = Integer.parseInt(dialogBinding.editQuantity.getText().toString().trim());
+                        }
+                    } catch (NumberFormatException ignored) {}
+                    String unit = dialogBinding.editUnit.getText() != null ? dialogBinding.editUnit.getText().toString().trim() : getString(R.string.default_unit);
+                    String expiry = dialogBinding.editExpiry.getText() != null ? dialogBinding.editExpiry.getText().toString().trim() : "";
 
                     if (name.isEmpty()) {
-                        Snackbar.make(binding.getRoot(), R.string.error_name, Snackbar.LENGTH_SHORT).show();
+                        dialogBinding.editName.setError(getString(R.string.error_name));
                         return;
                     }
 
-                    int quantity;
-                    try {
-                        quantity = Integer.parseInt(quantityStr);
-                    } catch (NumberFormatException e) {
-                        Snackbar.make(binding.getRoot(), R.string.error_quantity_number, Snackbar.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    PantryItem newItem = new PantryItem(
-                            existing == null ? 0 : existing.id,
-                            name, category, quantity, unit, expiry
-                    );
-                    database.saveItem(newItem);
+                    PantryItem item = new PantryItem(existing == null ? 0 : existing.id, name, category, quantity, unit, expiry);
+                    database.saveItem(item);
                     refreshDisplay();
                     Snackbar.make(binding.getRoot(), R.string.toast_updated, Snackbar.LENGTH_SHORT).show();
                 })
